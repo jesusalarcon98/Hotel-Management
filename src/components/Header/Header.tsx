@@ -4,9 +4,9 @@ import { MdDarkMode } from "react-icons/md"
 
 const Header = () => {
     return (
-        <header className="py-10 px-4 container max-w-screen-xl mx-auto test-xl flex flex-wrap md:flex-nowrap items-center justify-between">
+        <header className="py-10 container max-w-screen-xl mx-auto test-xl flex flex-wrap md:flex-nowrap items-center justify-between">
             <div className="flex items-center w-full md:2/3">
-                
+
                 <Link href="/" className="font-black text-tertiary-dark">
                     Hotels
                 </Link>
