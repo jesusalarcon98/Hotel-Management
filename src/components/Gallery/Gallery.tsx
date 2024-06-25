@@ -2,7 +2,8 @@ import Image from 'next/image';
 
 const Gallery = () => {
   return (
-    <div className='mx-auto container py-14 h-full'>
+    <div className=' px-4 mx-auto container py-6 h-full 2xl:max-w-screen-xl'>
+      {/* flex items-center gap-12 container mx-auto */}
       <div className='flex flex-wrap md:-m-2'>
         <div className='flex w-1/2 flex-wrap'>
           <div className='w-1/2 p-1 md:p-2 h-48'>

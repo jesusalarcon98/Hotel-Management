@@ -11,7 +11,8 @@ type Props = {
 const ClientComponent: FC<Props> = (props) => {
   const { heading1, section2 } = props;
   return (
-    <section className="flex px-4 items-center gap-12 container mx-auto">
+    <section className="flex px-4 items-center gap-12 container mx-auto 2xl:max-w-screen-xl">
+
       <div className="py-10 h-full">
         {heading1}
 
