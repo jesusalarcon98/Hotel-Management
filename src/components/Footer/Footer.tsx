@@ -5,7 +5,7 @@ import { BsFillSendFill, BsTelephoneOutbound } from "react-icons/bs"
 const Footer = () => {
   return (
     <footer className="mt-16">
-      <div className="container mx-auto max-w-screen-xl">
+      <div className="container mx-auto 2xl:max-w-screen-xl">
         <Link href="/" className="font-black text-tertiary-dark">
           Hotelzz
         </Link>
