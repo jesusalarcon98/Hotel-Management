@@ -2,7 +2,7 @@ type CoverImage = {
   url: string;
 };
 
-type Image = {
+export type Image = {
   _key: string;
   url: string;
 };
@@ -16,7 +16,7 @@ type Amenity = {
 type Slug = {
   _type: string;
   current: string;
-} 
+};
 
 export type Room = {
   _id: string;
@@ -28,7 +28,7 @@ export type Room = {
   IsBooked: boolean;
   name: string;
   numberOBeds: number;
-  offeredAmenities: Amenity;
+  offeredAmenities: Amenity[];
   price: number;
   slug: Slug;
   specialNote: string;
