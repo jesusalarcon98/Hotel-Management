@@ -6,17 +6,49 @@ import "react-datepicker/dist/react-datepicker.css"
 
 type Props = {
   checkinDate: Date | null;
-  setCheckinDate: Dispatch<SetStateAction<Date | null>>
+  setCheckinDate: Dispatch<SetStateAction<Date | null>>;
+  checkoutDate: Date | null;
+  setCheckoutDate: Dispatch<SetStateAction<Date | null>>;
+  setAdults: Dispatch<SetStateAction<number>>;
+  setNoOfChildren: Dispatch<SetStateAction<number>>;
+  calcMinCheckoutDate: () => Date | null;
   price: number;
   discount: number;
   specialNote: string;
+  adults: number;
+  noOfChildren: number;
+  isBooked: boolean;
+  handleBookNowClick: () => void
 };
 const BookRoomCta: FC<Props> = (props) => {
-  const { price, discount, specialNote, checkinDate, setCheckinDate } = props;
+  const {
+    price,
+    discount,
+    specialNote,
+    checkinDate,
+    setCheckinDate,
+    setCheckoutDate,
+    checkoutDate,
+    calcMinCheckoutDate,
+    setAdults,
+    setNoOfChildren,
+    adults,
+    noOfChildren,
+    isBooked,
+    handleBookNowClick
+  } = props;
 
-  const discountPrice = price - (price / 100) * discount
+  const discountPrice = price - (price / 100) * discount;
+  
+  const calcNoOfDays = () => {
+    if (!checkinDate || !checkoutDate) return 0;
+    const timeDiff = checkoutDate.getTime() - checkinDate.getTime()
+    const noOfDays = Math.ceil(timeDiff / (24 * 60 * 60 * 1000))
+    return noOfDays;
+  }
+
   return (
-    <div className="px-6 py-12">
+    <div className="px-6 py-6">
       <h3>
         <span className={`${discount ? "text-gray-400" : ""} font-bold text-xl`}>
           $ {price}
@@ -43,15 +75,65 @@ const BookRoomCta: FC<Props> = (props) => {
             onChange={date => setCheckinDate(date)}
             dateFormat="dd/MM/yyyy"
             minDate={new Date()}
-            popperPlacement="bottom-start"
-            shouldCloseOnSelect={false} // Mantiene el calendario abierto hasta que se seleccione algo
-            showPopperArrow={false} // Deshabilita la flecha si lo prefieres
-
             id="check-in-date"
             className="w-full border text-black border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary"
           />
         </div>
+        <div className="w-1/2 pl-2">
+          <label htmlFor="check-out-date" className="block text-sm font-medium text-gray-900 dark:text-gray-400">
+            Check Out date
+          </label>
+          <DatePicker
+            selected={checkoutDate}
+            onChange={date => setCheckoutDate(date)}
+            dateFormat="dd/MM/yyyy"
+            disabled={!checkinDate}
+            minDate={calcMinCheckoutDate()}
+            id="check-out-date"
+            className="w-full border text-black border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary"
+          />
+        </div>
       </div>
+
+      <div className="flex mt-4">
+        <div className="w-1/2 pr-2">
+          <label htmlFor="adult" className="block text-sm font-medium to-gray-900 dark:text-gray-400">Adults</label>
+          <input
+            type="number"
+            id="Adults"
+            value={adults}
+            onChange={(e) => setAdults(+e.target.value)}
+            min={1}
+            max={5}
+            className="w-full border border-gray-300 rounded-lg p-2.5"
+          />
+        </div>
+        <div className="w-1/2 pl-2">
+          <label htmlFor="children" className="block text-sm font-medium to-gray-900 dark:text-gray-400">Children</label>
+          <input
+            type="number"
+            id="Children"
+            value={noOfChildren}
+            onChange={(e) => setNoOfChildren(+e.target.value)}
+            min={0}
+            max={3}
+            className="w-full border border-gray-300 rounded-lg p-2.5"
+          />
+        </div>
+      </div>
+
+      {calcNoOfDays() > 0 ?
+        <p className="mt-3">
+          Total Price: ${calcNoOfDays() * discountPrice}
+        </p> :
+        <></>}
+
+      <button
+        disabled={isBooked}
+        onClick={handleBookNowClick}
+        className="btn-primary w-full mt-6 disabled:bg-gray-500 disabled:cursor-not-allowed ">
+        {isBooked ? "Booked" : "Book Now"}
+      </button>
 
 
 

@@ -1,6 +1,7 @@
 "use client"
 
 import useSWR from "swr";
+import axios from "axios";
 
 import { getRoom } from "@/libs/apis";
 import LoadingSpinner from "../../loading";
@@ -10,13 +11,17 @@ import { LiaFireExtinguisherSolid } from "react-icons/lia";
 import { AiOutlineMedicineBox } from "react-icons/ai";
 import { GiSmokeBomb } from "react-icons/gi";
 import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
-import { useState } from "react";
+import { Children, use, useState } from "react";
+import toast from "react-hot-toast";
+import { getStripe } from "@/libs/stripe";
 
 const RoomDetails = (props: { params: { slug: string } }) => {
   const { params: { slug }, } = props;
 
   const [checkinDate, setCheckinDate] = useState<Date | null>(null)
   const [checkoutDate, setCheckoutDate] = useState<Date | null>(null)
+  const [adults, setAdults] = useState(1)
+  const [noOfChildren, setNoOfChildren] = useState(0)
 
   const fetchRoom = async () => getRoom(slug);
   const { data: room, error, isLoading } = useSWR('/api/room', fetchRoom)
@@ -26,6 +31,59 @@ const RoomDetails = (props: { params: { slug: string } }) => {
     throw new Error("Cannot fetch data");
 
   if (!room) return <LoadingSpinner />
+
+  const calcMinCheckoutDate = () => {
+    if (checkinDate) {
+      const nextDay = new Date(checkinDate);
+      nextDay.setDate(nextDay.getDate() + 1)
+      return nextDay
+    }
+    return null
+  }
+
+  const handleBookNowClick = async () => {
+    if (!checkinDate || !checkoutDate) return toast.error("Please provide checkin /checkout date")
+
+    if (checkinDate > checkoutDate) return toast.error("Please choose a valid checkin period");
+
+    const numberOfDays = calcNumDays()
+    const hotelRoomSlug = room.slug.current;
+    const stripe = await getStripe()
+
+    try {
+      const { data: stripeSession } = await axios.post("/api/stripe",
+        {
+          checkinDate,
+          checkoutDate,
+          adults,
+          Children: noOfChildren,
+          numberOfDays,
+          hotelRoomSlug
+        }
+      );
+
+      if (stripe) {
+        const result = await stripe.redirectToCheckout({
+          sessionId: stripeSession.id
+        });
+
+        if (result.error) {
+          toast.error("Payment Failed.");
+        }
+
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error("An error occured")
+    }
+  }
+
+  const calcNumDays = () => {
+    if (!checkinDate || !checkoutDate) return 0;
+    const timeDiff = checkoutDate.getTime() - checkinDate.getTime()
+    const noOfDays = Math.ceil(timeDiff / (24 * 60 * 60 * 1000))
+    return noOfDays;
+  }
 
   return <div>
     <HotelPhotoGallery photos={room.images} />
@@ -96,13 +154,22 @@ const RoomDetails = (props: { params: { slug: string } }) => {
 
           </div>
         </div>
-        <div className="md:col-span-4 rounded-xl shadow-lg dark:shadow dark:shadow-white sticky top-10 h-fit overflow-auto">
+        <div className="md:col-span-4 rounded-xl shadow-lg dark:shadow dark:shadow-white sticky top-10 h-fit">
           <BookRoomCta
             discount={room.discount}
             price={room.price}
             specialNote={room.specialNote}
             checkinDate={checkinDate}
             setCheckinDate={setCheckinDate}
+            setCheckoutDate={setCheckoutDate}
+            checkoutDate={checkoutDate}
+            calcMinCheckoutDate={calcMinCheckoutDate}
+            adults={adults}
+            noOfChildren={noOfChildren}
+            setAdults={setAdults}
+            setNoOfChildren={setNoOfChildren}
+            isBooked={room.IsBooked}
+            handleBookNowClick={handleBookNowClick}
           />
         </div>
       </div>
