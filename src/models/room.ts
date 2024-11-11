@@ -26,9 +26,10 @@ export type Room = {
   dimension: string;
   discount: number;
   images: Image[];
-  IsBooked: boolean;
+  isBooked: boolean;
+  isFeatured: boolean;
   name: string;
-  numberOBeds: number;
+  numberOfBeds: number;
   offeredAmenities: Amenity[];
   price: number;
   slug: Slug;
@@ -46,4 +47,4 @@ export type CreateBookingDto = {
   children: number;
   totalPrice: number;
   discount: number;
-}
+};

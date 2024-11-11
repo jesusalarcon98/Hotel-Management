@@ -11,7 +11,7 @@ import { LiaFireExtinguisherSolid } from "react-icons/lia";
 import { AiOutlineMedicineBox } from "react-icons/ai";
 import { GiSmokeBomb } from "react-icons/gi";
 import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
-import { Children, use, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { getStripe } from "@/libs/stripe";
 
@@ -56,7 +56,7 @@ const RoomDetails = (props: { params: { slug: string } }) => {
           checkinDate,
           checkoutDate,
           adults,
-          Children: noOfChildren,
+          children: noOfChildren,
           numberOfDays,
           hotelRoomSlug
         }
@@ -168,7 +168,7 @@ const RoomDetails = (props: { params: { slug: string } }) => {
             noOfChildren={noOfChildren}
             setAdults={setAdults}
             setNoOfChildren={setNoOfChildren}
-            isBooked={room.IsBooked}
+            isBooked={room.isBooked}
             handleBookNowClick={handleBookNowClick}
           />
         </div>

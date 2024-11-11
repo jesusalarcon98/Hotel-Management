@@ -30,8 +30,8 @@ export async function POST(req: Request, res: Response) {
 
   if (
     !checkinDate ||
-    !adults ||
     !checkoutDate ||
+    !adults ||
     !hotelRoomSlug ||
     !numberOfDays
   ) {
@@ -47,16 +47,15 @@ export async function POST(req: Request, res: Response) {
   }
 
   const userId = session.user.id;
-
   const formattedCheckoutDate = checkoutDate.split("T")[0];
   const formattedCheckinDate = checkinDate.split("T")[0];
 
   try {
     const room = await getRoom(hotelRoomSlug);
-    const discoutPrice = room.price - (room.price / 100) * room.discount;
-    const totalPrice = discoutPrice * numberOfDays;
+    const discountPrice = room.price - (room.price / 100) * room.discount;
+    const totalPrice = discountPrice * numberOfDays;
 
-    //Create a stripe payment.
+    // Create a stripe payment
     const stripeSession = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: [
@@ -74,6 +73,17 @@ export async function POST(req: Request, res: Response) {
       ],
       payment_method_types: ["card"],
       success_url: `${origin}/users/${userId}`,
+      metadata: {
+        adults,
+        checkinDate: formattedCheckinDate,
+        checkoutDate: formattedCheckoutDate,
+        children,
+        hotelRoom: room._id,
+        numberOfDays,
+        user: userId,
+        discount: room.discount,
+        totalPrice,
+      },
     });
 
     return NextResponse.json(stripeSession, {
@@ -81,7 +91,7 @@ export async function POST(req: Request, res: Response) {
       statusText: "Payment session created",
     });
   } catch (error: any) {
-    console.log("Payment failed", error);
+    console.log("Payment falied", error);
     return new NextResponse(error, { status: 500 });
   }
 }
