@@ -17,7 +17,6 @@ const Rooms = () => {
     const searchQuery = searchParams.get("searchQuery");
     const roomType = searchParams.get("roomType");
 
-
     if (roomType) setRoomTypeFilter(roomType);
     if (searchQuery) setSearchQuery(searchQuery);
   }, [])
@@ -29,7 +28,8 @@ const Rooms = () => {
   const { data, error, isLoading } = useSWR("get/hotelRooms", fetchData)
 
   if (error) throw new Error("Cannot fetch data");
-  if (typeof data === "undefined" && !isLoading) throw new Error("Cannot fetch data");
+  if (typeof data === "undefined" && !isLoading)
+    throw new Error("Cannot fetch data");
 
   const filterRooms = (rooms: Room[]) => {
     return rooms.filter(room => {
