@@ -27,8 +27,6 @@ export async function POST(req: Request, res: Response) {
   switch (event.type) {
     case checkout_session_completed:
       const session = event.data.object;
-      console.log("El evento es: ", event.type);
-      console.log("session => ", session);
       const {
         // @ts-ignore
         metadata: {
@@ -42,7 +40,7 @@ export async function POST(req: Request, res: Response) {
           discount,
           totalPrice,
         },
-      } = session;
+      } = session.metadata;
 
       await createBooking({
         adults: Number(adults),
