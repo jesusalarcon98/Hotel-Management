@@ -33,7 +33,7 @@ const booking = {
     }),
     defineField({
       name: "numberOfDays",
-      title: "Number of Days",
+      title: "Number Of Days",
       type: "number",
       initialValue: 1,
       validation: (Rule) => Rule.required().min(1),
@@ -63,7 +63,7 @@ const booking = {
       name: "totalPrice",
       title: "Total Price",
       type: "number",
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().min(0),
     }),
   ],
 };

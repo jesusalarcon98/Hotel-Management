@@ -1,10 +1,11 @@
+import { CreateReviewDto, Review } from "./../models/review";
 import axios from "axios";
+
 import { CreateBookingDto, Room } from "@/models/room";
 import sanityClient from "./sanity";
 import * as queries from "./sanityQueries";
 import { Booking } from "@/models/booking";
-import { Review, UpdateReviewDto } from "@/models/review";
-import { CreateReviewDto } from "../models/review";
+import { UpdateReviewDto } from "@/models/review";
 
 export async function getFeaturedRoom() {
   const result = await sanityClient.fetch<Room>(
@@ -64,6 +65,7 @@ export const createBooking = async ({
       },
     ],
   };
+
   const { data } = await axios.post(
     `https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2021-10-21/data/mutate/${process.env.NEXT_PUBLIC_SANITY_DATASET}`,
     mutation,
@@ -86,6 +88,7 @@ export const updateHotelRoom = async (hotelRoomId: string) => {
       },
     ],
   };
+
   const { data } = await axios.post(
     `https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2021-10-21/data/mutate/${process.env.NEXT_PUBLIC_SANITY_DATASET}`,
     mutation,
@@ -110,9 +113,7 @@ export async function getUserBookings(userId: string) {
 export async function getUserData(userId: string) {
   const result = await sanityClient.fetch(
     queries.getUserDataQuery,
-    {
-      userId,
-    },
+    { userId },
     { cache: "no-cache" }
   );
 
@@ -155,6 +156,7 @@ export const updateReview = async ({
       },
     ],
   };
+
   const { data } = await axios.post(
     `https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2021-10-21/data/mutate/${process.env.NEXT_PUBLIC_SANITY_DATASET}`,
     mutation,
@@ -183,18 +185,19 @@ export const createReview = async ({
             _type: "reference",
             _ref: hotelRoomId,
           },
-          userRating: {
-            text: reviewText,
-          },
+          userRating,
+          text: reviewText,
         },
       },
     ],
   };
+
   const { data } = await axios.post(
     `https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2021-10-21/data/mutate/${process.env.NEXT_PUBLIC_SANITY_DATASET}`,
     mutation,
     { headers: { Authorization: `Bearer ${process.env.SANITY_STUDIO_TOKEN}` } }
   );
+
   return data;
 };
 

@@ -27,20 +27,29 @@ export async function POST(req: Request, res: Response) {
   switch (event.type) {
     case checkout_session_completed:
       const session = event.data.object;
+
       const {
-        // @ts-ignore
         metadata: {
+          // @ts-ignore
           adults,
+          // @ts-ignore
           checkinDate,
+          // @ts-ignore
           checkoutDate,
+          // @ts-ignore
           children,
+          // @ts-ignore
           hotelRoom,
+          // @ts-ignore
           numberOfDays,
+          // @ts-ignore
           user,
+          // @ts-ignore
           discount,
+          // @ts-ignore
           totalPrice,
         },
-      } = session.metadata;
+      } = session;
 
       await createBooking({
         adults: Number(adults),
@@ -54,11 +63,8 @@ export async function POST(req: Request, res: Response) {
         user,
       });
 
-      console.log("Aqui es despues de createBooking => ", session);
-
       //   Update hotel Room
       await updateHotelRoom(hotelRoom);
-      console.log("despues del await");
 
       return NextResponse.json("Booking successful", {
         status: 200,
