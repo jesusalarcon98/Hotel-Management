@@ -3,8 +3,7 @@ import { CreateBookingDto, Room } from "@/models/room";
 import sanityClient from "./sanity";
 import * as queries from "./sanityQueries";
 import { Booking } from "@/models/booking";
-import { getFeaturedRoomQuery } from "./sanityQueries";
-import { UpdateReviewDto } from "@/models/review";
+import { Review, UpdateReviewDto } from "@/models/review";
 import { CreateReviewDto } from "../models/review";
 
 export async function getFeaturedRoom() {
@@ -198,3 +197,15 @@ export const createReview = async ({
   );
   return data;
 };
+
+export async function getRoomReviews(roomId: string) {
+  const result = await sanityClient.fetch<Review[]>(
+    queries.getRoomReviewsQuery,
+    {
+      roomId,
+    },
+    { cache: "no-cache" }
+  );
+
+  return result;
+}

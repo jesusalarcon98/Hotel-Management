@@ -67,5 +67,14 @@ isAdmin,
 bout,
 _createdAt,
 image
+}`;
 
+export const getRoomReviewsQuery = groq`*[_type == "review" && hotelRoom._ref == $roomId] {
+  _createdAt,
+  _id,
+  text,
+  user -> {
+      name
+  },
+  userRating
 }`;
