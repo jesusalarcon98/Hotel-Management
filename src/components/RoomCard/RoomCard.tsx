@@ -10,7 +10,7 @@ type Props = {
 
 const RoomCard: FC<Props> = props => {
   const {
-    room: { coverImage, name, price, type, description, slug, IsBooked },
+    room: { coverImage, name, price, type, description, slug, isBooked },
   } = props;
 
   return (
@@ -37,9 +37,9 @@ const RoomCard: FC<Props> = props => {
 
         <Link
           href={`/rooms/${slug.current}`}
-          className='bg-primary inline-block text-center w-full py-4 rounded-xl text-white text-xl font-bold hover:-translate-y-2 hover:shadow-lg transition-all duration-500 '
+          className='bg-primary inline-block text-center w-full py-4 rounded-xl text-white text-xl font-bold hover:-translate-y-2 hover:shadow-lg transition-all duration-500'
         >
-          {IsBooked ? 'BOOKED' : 'BOOK NOW'}
+          {isBooked ? 'BOOKED' : 'BOOK NOW'}
         </Link>
       </div>
     </div>
